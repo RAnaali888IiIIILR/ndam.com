@@ -4,6 +4,7 @@ const College = require('../models/College');
 const Department = require('../models/Department');
 const { authenticate, authorize } = require('../middleware/auth');
 const AuditLog = require('../models/AuditLog');
+const { hashIPAddress } = require('../utils/security');
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.post('/users', authenticate, authorize('admin'), async (req, res) => {
       user: req.user._id,
       action: 'ADD_USER',
       details: `إضافة مستخدم جديد: ${username} - الدور: ${role}`,
-      ipAddress: req.ip
+      ipAddress: hashIPAddress(req.ip) // استخدام بصمة IP بدلاً من IP الكامل
     });
 
     res.status(201).json({
@@ -102,7 +103,7 @@ router.put('/users/:id', authenticate, authorize('admin'), async (req, res) => {
       user: req.user._id,
       action: 'UPDATE_USER',
       details: `تحديث بيانات المستخدم: ${user.username}`,
-      ipAddress: req.ip
+      ipAddress: hashIPAddress(req.ip) // استخدام بصمة IP بدلاً من IP الكامل
     });
 
     res.status(200).json({
@@ -144,7 +145,7 @@ router.put('/users/:id/password', authenticate, authorize('admin'), async (req, 
       user: req.user._id,
       action: 'UPDATE_USER',
       details: `تغيير كلمة مرور المستخدم: ${user.username}`,
-      ipAddress: req.ip
+      ipAddress: hashIPAddress(req.ip) // استخدام بصمة IP بدلاً من IP الكامل
     });
 
     res.status(200).json({
@@ -183,7 +184,7 @@ router.post('/colleges', authenticate, authorize('admin'), async (req, res) => {
       user: req.user._id,
       action: 'ADD_COLLEGE',
       details: `إضافة كلية جديدة: ${name}`,
-      ipAddress: req.ip
+      ipAddress: hashIPAddress(req.ip) // استخدام بصمة IP بدلاً من IP الكامل
     });
 
     res.status(201).json({
@@ -244,7 +245,7 @@ router.post('/departments', authenticate, authorize('admin'), async (req, res) =
       user: req.user._id,
       action: 'ADD_DEPARTMENT',
       details: `إضافة قسم جديد: ${name}`,
-      ipAddress: req.ip
+      ipAddress: hashIPAddress(req.ip) // استخدام بصمة IP بدلاً من IP الكامل
     });
 
     res.status(201).json({
